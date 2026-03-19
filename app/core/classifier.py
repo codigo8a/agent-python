@@ -39,24 +39,59 @@ class IntentClassifier:
 
     def _extract_params(self, intent: Intent, text: str) -> Dict[str, Any]:
         """Simple parameter extractor based on command structure."""
-        parts = text.split(maxsplit=3)
+        # Convert to list of words and ignore trigger words like "archivos", "archivo", "los", "el"
+        # only if they appear where the parameter is expected.
+        parts = text.split()
         params = {}
 
         if intent == Intent.LIST_FILES:
-            params["path"] = parts[1] if len(parts) > 1 else "."
+            # If "listar archivos", parts[1] is "archivos". Ignore it.
+            if len(parts) > 1:
+                # If first word after command is "archivos", check if there's a 3rd word
+                if parts[1].lower() in ["archivos", "los"]:
+                    params["path"] = parts[2] if len(parts) > 2 else "."
+                else:
+                    params["path"] = parts[1]
+            else:
+                params["path"] = "."
+                
         elif intent == Intent.READ_FILE:
-            params["filename"] = parts[1] if len(parts) > 1 else None
+            if len(parts) > 1:
+                if parts[1].lower() in ["archivo", "el"]:
+                    params["filename"] = parts[2] if len(parts) > 2 else None
+                else:
+                    params["filename"] = parts[1]
+            else:
+                params["filename"] = None
+                
         elif intent == Intent.CREATE_FILE:
-            params["filename"] = parts[1] if len(parts) > 1 else None
-            params["content"] = " ".join(parts[2:]) if len(parts) > 2 else ""
+            # Similar logic for create
+            if len(parts) > 1:
+                idx = 1
+                if parts[idx].lower() in ["archivo", "el"]:
+                    idx += 1
+                
+                if len(parts) > idx:
+                    params["filename"] = parts[idx]
+                    params["content"] = " ".join(parts[idx+1:])
+                else:
+                    params["filename"] = None
+                    params["content"] = ""
+            else:
+                params["filename"] = None
+                params["content"] = ""
+                
         elif intent == Intent.EDIT_FILE:
             # Expected: /edit filename target replacement
-            if len(parts) >= 4:
-                params["filename"] = parts[1]
-                # Further splitting for target/replacement
-                rest = parts[3].split(maxsplit=1)
-                if len(rest) >= 2:
-                    params["target"] = rest[0]
-                    params["replacement"] = rest[1]
+            # Skip "archivo" or "el" if present
+            if len(parts) > 1:
+                idx = 1
+                if parts[idx].lower() in ["archivo", "el"]:
+                    idx += 1
+                
+                if len(parts) >= idx + 3:
+                     params["filename"] = parts[idx]
+                     params["target"] = parts[idx+1]
+                     params["replacement"] = " ".join(parts[idx+2:])
         
         return params
