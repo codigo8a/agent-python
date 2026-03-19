@@ -2,16 +2,15 @@
 
 Este es un bot de Telegram modular y asíncrono que responde "que pasa?" a cualquier mensaje recibido.
 
-## Arquitectura
+## Arquitectura (Rule Engine)
 
-El proyecto sigue reglas de separación de responsabilidades:
+El proyecto utiliza un motor de reglas para procesar mensajes:
 
-- **`run.py`**: Punto de entrada principal.
-- **`app/main.py`**: Inicialización de la aplicación.
-- **`app/config.py`**: Carga de variables de entorno y configuración de logs.
-- **`app/bot/telegram_bot.py`**: Manejo de la comunicación con la API de Telegram.
-- **`app/core/router.py`**: Lógica de enrutamiento de mensajes.
-- **`app/services/responder.py`**: Lógica de negocio (generación de respuestas).
+- **`run.py`**: Punto de entrada.
+- **`app/core/classifier.py`**: **Intent Classifier** que identifica la intención del usuario usando reglas (Regex/Keywords).
+- **`app/core/router.py`**: **Command Router** que delega el mensaje al manejador correspondiente.
+- **`app/handlers/`**: Manejadores especializados (`FileHandler`, `SystemHandler`) que ejecutan las acciones.
+- **`app/services/file_manager.py`**: Servicio base para operaciones de archivos.
 
 ## Requisitos
 

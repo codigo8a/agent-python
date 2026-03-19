@@ -3,7 +3,7 @@ import logging
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from app.config import Config
-from app.core.router import Router
+from app.core.router import CommandRouter
 
 # Set up logging for this module
 logger = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ class TelegramBot:
     
     def __init__(self, token: str):
         self._token = token
-        self._router = Router()
+        self._router = CommandRouter()
         self._app = Application.builder().token(self._token).build()
 
     async def _handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
