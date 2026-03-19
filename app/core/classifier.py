@@ -8,7 +8,7 @@ class IntentClassifier:
     def __init__(self):
         # Rules defined as (Regex Pattern, Intent)
         self.rules: List[Tuple[str, Intent]] = [
-            (r"^/list\b|^puedes (listar|ver) los archivos", Intent.LIST_FILES),
+            (r"^/list\b|^(listar|ver|muestrame) archivos", Intent.LIST_FILES),
             (r"^/read\b|^dime que dice|^lee", Intent.READ_FILE),
             (r"^/create\b|^crea el archivo|^nuevo archivo", Intent.CREATE_FILE),
             (r"^/edit\b|^edita|^reemplaza en|^cambia", Intent.EDIT_FILE),
