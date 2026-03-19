@@ -33,7 +33,13 @@ class IntentClassifier:
         for pattern, intent in self.rules:
             if re.search(pattern, text_lower):
                 params = self._extract_params(intent, text)
+                params["text"] = text # Keep the full text
                 return intent, params
+
+        # If no specific rule matches, we consider it a CHAT intent
+        # but only if it's not empty.
+        if text.strip():
+            return Intent.CHAT, {"text": text}
 
         return Intent.UNKNOWN, {}
 

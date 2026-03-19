@@ -15,6 +15,7 @@ load_dotenv()
 class Config:
     """Application configuration from environment variables."""
     TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
+    OPENROUTER_API_KEY: str = os.getenv("OPENROUTER_API_KEY", "")
 
     @classmethod
     def validate(cls) -> None:
@@ -22,3 +23,6 @@ class Config:
         if not cls.TELEGRAM_BOT_TOKEN:
             logger.error("TELEGRAM_BOT_TOKEN is missing in .env or environment variables.")
             raise ValueError("TELEGRAM_BOT_TOKEN is required to start the bot.")
+        
+        if not cls.OPENROUTER_API_KEY:
+            logger.warning("OPENROUTER_API_KEY is missing. LLM features will be disabled.")

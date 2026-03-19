@@ -8,4 +8,5 @@ class Intent(Enum):
     EDIT_FILE = auto()
     HELP = auto()
     GREETING = auto()
+    CHAT = auto()
     UNKNOWN = auto()
