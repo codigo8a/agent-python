@@ -1,3 +1,4 @@
+import re
 import logging
 from typing import Dict, Any
 from app.core.intent import Intent
@@ -37,22 +38,28 @@ class CommandRouter:
             if intent == Intent.CHAT:
                 response = await self._llm_handler.handle(intent, params)
                 
-                # Check if LLM wants to execute a tool (loop up to 3 times to avoid infinite loops)
+                # Check if LLM wants to execute a tool (regex looks for commands like /list, /read, etc.)
+                command_pattern = r"(/list|/read|/create|/edit)\b[^\n]*"
                 max_iterations = 3
-                while response.startswith("/") and max_iterations > 0:
-                    logger.info(f"LLM suggested action: {response}")
+                
+                while max_iterations > 0:
+                    match = re.search(command_pattern, response)
+                    if not match:
+                        break
+                        
+                    command = match.group(0).strip()
+                    logger.info(f"Detected tool suggestion in AI response: {command}")
                     
-                    # Identify the suggested command
-                    tool_intent, tool_params = self._classifier.classify(response)
+                    # Identify and execute the suggested command
+                    tool_intent, tool_params = self._classifier.classify(command)
                     
                     if tool_intent in [Intent.LIST_FILES, Intent.READ_FILE, Intent.CREATE_FILE, Intent.EDIT_FILE]:
                         tool_result = await self._file_handler.handle(tool_intent, tool_params)
                     else:
-                        tool_result = f"Error: No se pudo ejecutar el comando '{response}'."
+                        tool_result = f"Error: No se pudo ejecutar el comando '{command}'."
                     
-                    # Feed result back to LLM
-                    logger.info(f"Feeding tool result back: {tool_result[:50]}...")
-                    feedback_prompt = f"Resultado del comando {response}:\n{tool_result}\n\nAnaliza este resultado y da tu respuesta final o ejecuta otro comando si es necesario."
+                    # Feed result back to LLM for final answer
+                    feedback_prompt = f"Resultado del comando {command}:\n{tool_result}\n\nCon esto en mente, responde al usuario final o ejecuta otro comando si es necesario."
                     response = await self._llm_handler.handle(Intent.CHAT, {"text": feedback_prompt})
                     max_iterations -= 1
                 
