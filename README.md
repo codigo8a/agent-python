@@ -1,99 +1,59 @@
-# Telegram Bot "Que Pasa"
+# Telegram Bot "Que Pasa" (Async Modular Version)
 
-Un bot simple de Telegram que responde "que pasa?" a cualquier mensaje recibido.
+Este es un bot de Telegram modular y asíncrono que responde "que pasa?" a cualquier mensaje recibido.
+
+## Arquitectura
+
+El proyecto sigue reglas de separación de responsabilidades:
+
+- **`run.py`**: Punto de entrada principal.
+- **`app/main.py`**: Inicialización de la aplicación.
+- **`app/config.py`**: Carga de variables de entorno y configuración de logs.
+- **`app/bot/telegram_bot.py`**: Manejo de la comunicación con la API de Telegram.
+- **`app/core/router.py`**: Lógica de enrutamiento de mensajes.
+- **`app/services/responder.py`**: Lógica de negocio (generación de respuestas).
 
 ## Requisitos
 
 - Python 3.10 o superior.
-- Una cuenta de Telegram y un Token de Bot (ya configurado en `bot.py`).
+- Una cuenta de Telegram y un Token de Bot (obtenido de [@BotFather](https://t.me/BotFather)).
 
-## Instalación Local
+## Instalación y Ejecución
 
-1.  Clona o descarga este repositorio.
-2.  Crea un entorno virtual:
-    ```bash
-    python -m venv venv
+1.  **Clona o descarga este repositorio.**
+2.  **Configura las variables de entorno:**
+    Crea un archivo `.env` en la raíz (si no existe ya) y añade tu token:
+    ```env
+    TELEGRAM_BOT_TOKEN=tu_token_aqui
     ```
-3.  Activa el entorno virtual:
-    - **Windows**: `venv\Scripts\activate`
-    - **Linux/macOS**: `source venv/bin/activate`
-4.  Instala las dependencias:
+3.  **Instala las dependencias:**
     ```bash
     pip install -r requirements.txt
     ```
-5.  Ejecuta el bot:
+4.  **Ejecuta el bot:**
     ```bash
-    python bot.py
+    python run.py
     ```
 
-## Despliegue en Servidor Linux (Ubuntu/Debian)
+## Despliegue en Servidor
 
-Para que el bot corra permanentemente en un servidor, se recomienda usar **systemd**.
+Para que el bot corra permanentemente, puedes usar un gestor de procesos como **Docker** o **systemd**.
 
-### 1. Preparar el servidor
+### Ejemplo con systemd
 
-```bash
-# Actualizar el sistema
-sudo apt update && sudo apt upgrade -y
-
-# Instalar Python y venv si no están presentes
-sudo apt install python3 python3-venv -y
-
-# Mover los archivos a una carpeta (ejemplo: /home/usuario/telegram-bot)
-mkdir ~/telegram-bot
-# (Copia bot.py y requirements.txt a esa carpeta)
-cd ~/telegram-bot
-
-# Crear entorno virtual e instalar dependencias
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-### 2. Crear el servicio de systemd
-
-Crea un archivo de servicio para que el bot se inicie automáticamente:
-
-```bash
-sudo nano /etc/systemd/system/telegram-bot.service
-```
-
-Pega el siguiente contenido (ajusta `User` y `WorkingDirectory` según tu caso):
+Crea `/etc/systemd/system/telegram-bot.service`:
 
 ```ini
 [Unit]
-Description=Telegram Bot - Que Pasa
+Description=Modular Telegram Bot
 After=network.target
 
 [Service]
 User=tu_usuario
-WorkingDirectory=/home/tu_usuario/telegram-bot
-ExecStart=/home/tu_usuario/telegram-bot/venv/bin/python bot.py
+WorkingDirectory=/ruta/al/proyecto
+ExecStart=/ruta/al/proyecto/venv/bin/python run.py
 Restart=always
 
 [Install]
 WantedBy=multi-user.target
-```
-
-### 3. Activar el servicio
-
-```bash
-# Recargar systemd
-sudo systemctl daemon-reload
-
-# Habilitar para que inicie con el sistema
-sudo systemctl enable telegram-bot
-
-# Iniciar el bot
-sudo systemctl start telegram-bot
-
-# Ver estado
-sudo systemctl status telegram-bot
-```
-
-### 4. Ver logs del bot
-
-Si algo falla, puedes ver los logs con:
-```bash
-journalctl -u telegram-bot -f
 ```
