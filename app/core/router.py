@@ -39,7 +39,7 @@ class CommandRouter:
                 response = await self._llm_handler.handle(intent, params)
                 
                 # Check if LLM wants to execute a tool (regex looks for commands like /list, /read, etc.)
-                command_pattern = r"(/list|/read|/create|/edit)\b[^\n]*"
+                command_pattern = r"(/list|/read|/create|/edit)[^\n]*"
                 max_iterations = 3
                 
                 while max_iterations > 0:

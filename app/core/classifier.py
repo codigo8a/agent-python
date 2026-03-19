@@ -30,6 +30,14 @@ class IntentClassifier:
 
         text_lower = text.lower().strip()
 
+        # Normalize commands with missing spaces (e.g., /listapp -> /list app)
+        if text_lower.startswith("/"):
+            for cmd in ["/list", "/read", "/create", "/edit", "/help"]:
+                if text_lower.startswith(cmd) and len(text_lower) > len(cmd) and text_lower[len(cmd)] != ' ':
+                    text_lower = cmd + " " + text_lower[len(cmd):]
+                    text = text[:len(cmd)] + " " + text[len(cmd):]
+                    break
+
         for pattern, intent in self.rules:
             if re.search(pattern, text_lower):
                 params = self._extract_params(intent, text)

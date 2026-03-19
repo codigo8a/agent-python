@@ -36,6 +36,7 @@ class LLMService:
                         "2. `/read [archivo]` - Lee el contenido de un archivo. Úsalo para entender el código.\n"
                         "3. `/create [archivo] [contenido]` - Crea un nuevo archivo.\n"
                         "4. `/edit [archivo] [buscar] [reemplazar]` - Edita un archivo reemplazando texto.\n\n"
+                        "IMPORTANTE: SIEMPRE deja un espacio entre el comando y el nombre del archivo o carpeta. Ej: /list app (NO /listapp).\n\n"
                         "INSTRUCCIONES DE RESPUESTA:\n"
                         "- Si necesitas información que no tienes (ej. ver qué archivos hay), responde ÚNICAMENTE con el comando.\n"
                         "- Si ya tienes la información necesaria, responde de forma natural al usuario.\n"
