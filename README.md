@@ -18,22 +18,14 @@ El proyecto sigue reglas de separación de responsabilidades:
 - Python 3.10 o superior.
 - Una cuenta de Telegram y un Token de Bot (obtenido de [@BotFather](https://t.me/BotFather)).
 
-## Instalación y Ejecución
+## Comandos de Gestión de Archivos
 
-1.  **Clona o descarga este repositorio.**
-2.  **Configura las variables de entorno:**
-    Crea un archivo `.env` en la raíz (si no existe ya) y añade tu token:
-    ```env
-    TELEGRAM_BOT_TOKEN=tu_token_aqui
-    ```
-3.  **Instala las dependencias:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-4.  **Ejecuta el bot:**
-    ```bash
-    python run.py
-    ```
+Ahora el bot permite interactuar con el sistema de archivos del proyecto:
+
+- `/list [ruta]`: Lista los archivos y carpetas en la ruta especificada (por defecto la raíz).
+- `/read [archivo]`: Muestra el contenido de un archivo de texto.
+- `/create [archivo] [contenido]`: Crea un nuevo archivo con el contenido proporcionado.
+- `/edit [archivo] [texto_viejo] [texto_nuevo]`: Reemplaza una cadena de texto por otra dentro de un archivo.
 
 ## Despliegue en Servidor
 

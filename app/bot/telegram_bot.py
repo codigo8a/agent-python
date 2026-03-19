@@ -24,7 +24,7 @@ class TelegramBot:
                 logger.info(f"Received message: {update.message.text}")
                 
                 # Get response from the router
-                response = await self._router.route()
+                response = await self._router.route(update.message.text)
                 
                 # Send the response back
                 await update.message.reply_text(response)
