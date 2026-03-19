@@ -10,7 +10,7 @@ class LLMService:
     def __init__(self):
         self._api_key = Config.OPENROUTER_API_KEY
         self._api_url = "https://openrouter.ai/api/v1/chat/completions"
-        self._model = "google/gemini-2.0-flash-exp:free" # Using a free model by default
+        self._model = "google/gemini-flash-1.5-exp:free" # Use a more stable stable free model
 
     async def get_response(self, prompt: str) -> str:
         """Get a completion from OpenRouter."""
